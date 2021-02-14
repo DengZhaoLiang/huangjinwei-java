@@ -33,20 +33,37 @@ CREATE TABLE `user`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
 
--- 商品
-CREATE TABLE `product`
+-- 书
+CREATE TABLE `book`
 (
-    `id`         BIGINT(13)     NOT NULL AUTO_INCREMENT,
-    `name`       VARCHAR(255)   NOT NULL DEFAULT '' COMMENT '商品名',
-    `image`      VARCHAR(255)   NOT NULL DEFAULT '' COMMENT '主图',
-    `status`     TINYINT(1)     NOT NULL DEFAULT 0 COMMENT '状态 0-下架 1-上架',
-    `price`      DECIMAL(10, 2) NOT NULL DEFAULT 0 COMMENT '价格',
-    `inventory`  BIGINT(10)     NOT NULL DEFAULT 0 COMMENT '库存量',
-    `detail`     LONGTEXT COMMENT '图文详情',
-    `created_at` BIGINT(13)     NOT NULL DEFAULT 0 COMMENT '创建时间',
-    `updated_at` BIGINT(13)     NOT NULL DEFAULT 0 COMMENT '更新时间',
+    `id`          BIGINT(13)          NOT NULL AUTO_INCREMENT,
+    `name`        VARCHAR(255)        NOT NULL DEFAULT '' COMMENT '书名',
+    `author`      VARCHAR(255)        NOT NULL DEFAULT '' COMMENT '作者',
+    `image`       TEXT COMMENT '封面图',
+    `price`       DECIMAL(10, 2)      NOT NULL DEFAULT 0 COMMENT '价格',
+    `inventory`   BIGINT(10)          NOT NULL DEFAULT 0 COMMENT '库存量',
+    `commend`     DECIMAL(2, 1)       NOT NULL DEFAULT 0 COMMENT '推荐程度',
+    `status`      TINYINT(1)          NOT NULL DEFAULT 0 COMMENT '状态 0-下架 1-上架',
+    `category_id` BIGINT(20) UNSIGNED NOT NULL COMMENT '类别ID',
+    `created_at`  BIGINT(13)          NOT NULL DEFAULT 0 COMMENT '创建时间',
+    `updated_at`  BIGINT(13)          NOT NULL DEFAULT 0 COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    KEY `product_price_index` (`price`)
+    KEY `book_price_index` (`price`),
+    KEY `book_commend_index` (`commend`),
+    KEY `book_category_id_index` (`category_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+-- 类别
+CREATE TABLE `category`
+(
+    `id`         BIGINT(13)   NOT NULL AUTO_INCREMENT,
+    `name`       VARCHAR(255) NOT NULL DEFAULT '' COMMENT '类别',
+    `created_at` BIGINT(13)   NOT NULL DEFAULT 0 COMMENT '创建时间',
+    `updated_at` BIGINT(13)   NOT NULL DEFAULT 0 COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `category_name_unique` (`name`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
@@ -105,24 +122,24 @@ CREATE TABLE `order`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci COMMENT '订单表';
 
--- 订单商品表
-CREATE TABLE `order_product`
+-- 订单书表
+CREATE TABLE `order_book`
 (
-    `id`            BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `order_sn`      CHAR(32)            NOT NULL DEFAULT '' COMMENT '订单号',
-    `product_id`    BIGINT(20) UNSIGNED NOT NULL COMMENT '商品ID',
-    `product_name`  VARCHAR(255)        NOT NULL DEFAULT '' COMMENT '商品名',
-    `product_image` VARCHAR(255)        NOT NULL DEFAULT '' COMMENT '商品主图',
-    `product_price` DECIMAL(10, 2)      NOT NULL DEFAULT 0 COMMENT '单价',
-    `quantity`      INT(9)              NOT NULL DEFAULT 0 COMMENT '购买数量',
-    `created_at`    BIGINT(13) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建时间',
-    `updated_at`    BIGINT(13) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新时间',
+    `id`         BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `order_sn`   CHAR(32)            NOT NULL DEFAULT '' COMMENT '订单号',
+    `book_id`    BIGINT(20) UNSIGNED NOT NULL COMMENT '书ID',
+    `book_name`  VARCHAR(255)        NOT NULL DEFAULT '' COMMENT '书名',
+    `book_image` TEXT COMMENT '书主图',
+    `book_price` DECIMAL(10, 2)      NOT NULL DEFAULT 0 COMMENT '单价',
+    `quantity`   INT(9)              NOT NULL DEFAULT 0 COMMENT '购买数量',
+    `created_at` BIGINT(13) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建时间',
+    `updated_at` BIGINT(13) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    KEY `order_product_order_sn_unique` (`order_sn`),
-    KEY `order_product_product_id_index` (`product_id`)
+    KEY `order_book_order_sn_unique` (`order_sn`),
+    KEY `order_book_book_id_index` (`book_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci COMMENT '订单商品表';
+  COLLATE = utf8mb4_unicode_ci COMMENT '订单书表';
 
 -- 地址表
 CREATE TABLE `address`

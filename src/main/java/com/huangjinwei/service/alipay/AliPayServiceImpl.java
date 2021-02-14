@@ -67,7 +67,7 @@ public class AliPayServiceImpl implements AliPayService {
             throw new IllegalArgumentException("订单金额必须大于0");
         }
         if (StringUtils.isEmpty(goodsName)) {
-            throw new IllegalArgumentException("商品名称不能为为空");
+            throw new IllegalArgumentException("书名称不能为为空");
         }
         QueryWrapper<Payment> wrapper = new QueryWrapper<>();
         wrapper.eq("order_sn", orderNo);

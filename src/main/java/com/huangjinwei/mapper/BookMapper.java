@@ -1,7 +1,7 @@
 package com.huangjinwei.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.huangjinwei.model.Product;
+import com.huangjinwei.model.Book;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
  */
 @Mapper
 @Repository
-public interface ProductMapper extends BaseMapper<Product> {
+public interface BookMapper extends BaseMapper<Book> {
 
     /**
      * 减少库存

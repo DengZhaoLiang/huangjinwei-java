@@ -1,4 +1,4 @@
-package com.huangjinwei.dto.admin.product;
+package com.huangjinwei.dto.admin.Book;
 
 import lombok.Data;
 
@@ -7,10 +7,10 @@ import lombok.Data;
  * 2021-02-01
  */
 @Data
-public class AdminProductRequest {
+public class AdminBookRequest {
 
     /**
-     * 商品名
+     * 书名
      */
     private String name;
 }

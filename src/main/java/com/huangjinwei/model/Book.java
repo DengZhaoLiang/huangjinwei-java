@@ -11,17 +11,17 @@ import java.math.BigDecimal;
  * 2021-02-01
  */
 @Data
-public class Product {
+public class Book {
 
 
     /**
-     * 商品ID
+     * 书ID
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     * 商品名
+     * 书名
      */
     private String name;
 
@@ -41,14 +41,19 @@ public class Product {
     private Integer inventory;
 
     /**
+     * 推荐程度
+     */
+    private BigDecimal commend;
+
+    /**
      * 状态
      */
     private Integer status;
 
     /**
-     * 图文详情
+     * 类别ID
      */
-    private String detail;
+    private Long categoryId;
 
     /**
      * 创建时间

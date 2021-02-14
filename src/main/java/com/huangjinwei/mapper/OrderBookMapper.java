@@ -1,7 +1,7 @@
 package com.huangjinwei.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.huangjinwei.model.OrderProduct;
+import com.huangjinwei.model.OrderBook;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
  */
 @Mapper
 @Repository
-public interface OrderProductMapper extends BaseMapper<OrderProduct> {
+public interface OrderBookMapper extends BaseMapper<OrderBook> {
 }

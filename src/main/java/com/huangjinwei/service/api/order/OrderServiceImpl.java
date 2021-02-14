@@ -2,18 +2,18 @@ package com.huangjinwei.service.api.order;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.huangjinwei.assembler.OrderAssembler;
-import com.huangjinwei.assembler.OrderProductAssembler;
+import com.huangjinwei.assembler.OrderBookAssembler;
 import com.huangjinwei.constant.PaymentType;
 import com.huangjinwei.dto.api.order.AliPayResponse;
 import com.huangjinwei.dto.api.order.OrderRequest;
 import com.huangjinwei.dto.api.order.OrderResponse;
 import com.huangjinwei.mapper.AddressMapper;
+import com.huangjinwei.mapper.BookMapper;
+import com.huangjinwei.mapper.OrderBookMapper;
 import com.huangjinwei.mapper.OrderMapper;
-import com.huangjinwei.mapper.OrderProductMapper;
-import com.huangjinwei.mapper.ProductMapper;
+import com.huangjinwei.model.Book;
 import com.huangjinwei.model.Order;
-import com.huangjinwei.model.OrderProduct;
-import com.huangjinwei.model.Product;
+import com.huangjinwei.model.OrderBook;
 import com.huangjinwei.service.alipay.AliPayService;
 import com.huangjinwei.utils.OrderSnGenerateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -48,10 +48,10 @@ public class OrderServiceImpl implements OrderService {
     private OrderAssembler mOrderAssembler;
 
     @Autowired
-    private OrderProductMapper mOrderProductMapper;
+    private OrderBookMapper mOrderBookMapper;
 
     @Autowired
-    private OrderProductAssembler mOrderProductAssembler;
+    private OrderBookAssembler mOrderBookAssembler;
 
     @Autowired
     private AddressMapper mAddressMapper;
@@ -63,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderSnGenerateUtil mOrderSnGenerateUtil;
 
     @Autowired
-    private ProductMapper mProductMapper;
+    private BookMapper mBookMapper;
 
     @Override
     public Page<OrderResponse> pageOrders(Long userId, Pageable pageable) {
@@ -72,12 +72,12 @@ public class OrderServiceImpl implements OrderService {
                 .stream()
                 .map(order -> {
                     OrderResponse response = mOrderAssembler.toApiResponse(order);
-                    QueryWrapper<OrderProduct> wrapper = new QueryWrapper<>();
+                    QueryWrapper<OrderBook> wrapper = new QueryWrapper<>();
                     wrapper.eq("order_sn", response.getOrderSn());
-                    response.setProducts(
-                            mOrderProductMapper.selectList(wrapper)
+                    response.setBooks(
+                            mOrderBookMapper.selectList(wrapper)
                                     .stream()
-                                    .map(mOrderProductAssembler::toProducts)
+                                    .map(mOrderBookAssembler::toBooks)
                                     .collect(Collectors.toList()));
                     response.setAddress(mAddressMapper.selectById(order.getAddressId()));
                     return response;
@@ -110,41 +110,41 @@ public class OrderServiceImpl implements OrderService {
         order.setCreatedAt(Instant.now().getEpochSecond());
         order.setUpdatedAt(Instant.now().getEpochSecond());
 
-        // 循环插入购买的商品以及计算总价
+        // 循环插入购买的书以及计算总价
         AtomicReference<BigDecimal> totalPrice = new AtomicReference<>(new BigDecimal(0));
-        request.getProducts().forEach(it -> {
-            Product product = mProductMapper.selectById(it.getProductId());
-            if (Objects.isNull(product)) {
+        request.getBooks().forEach(it -> {
+            Book book = mBookMapper.selectById(it.getBookId());
+            if (Objects.isNull(book)) {
                 return;
             }
             // 库存为0不能购买
-            if (product.getInventory() == 0) {
+            if (book.getInventory() == 0) {
                 throw new RuntimeException("库存为0不能购买");
             }
             // 计算库存量
-            if (product.getInventory() < it.getPurchaseNum()) {
+            if (book.getInventory() < it.getPurchaseNum()) {
                 throw new RuntimeException("购买数量大于库存");
             }
-            OrderProduct orderProduct = new OrderProduct();
-            orderProduct.setOrderSn(orderSn);
-            orderProduct.setProductId(it.getProductId());
-            orderProduct.setProductName(product.getName());
-            orderProduct.setProductImage(product.getImage());
-            orderProduct.setProductPrice(product.getPrice());
-            orderProduct.setQuantity(it.getPurchaseNum());
-            orderProduct.setCreatedAt(Instant.now().getEpochSecond());
-            orderProduct.setUpdatedAt(Instant.now().getEpochSecond());
-            mOrderProductMapper.insert(orderProduct);
+            OrderBook orderBook = new OrderBook();
+            orderBook.setOrderSn(orderSn);
+            orderBook.setBookId(it.getBookId());
+            orderBook.setBookName(book.getName());
+            orderBook.setBookImage(book.getImage());
+            orderBook.setBookPrice(book.getPrice());
+            orderBook.setQuantity(it.getPurchaseNum());
+            orderBook.setCreatedAt(Instant.now().getEpochSecond());
+            orderBook.setUpdatedAt(Instant.now().getEpochSecond());
+            mOrderBookMapper.insert(orderBook);
 
             // 计算总金额
-            totalPrice.getAndSet(totalPrice.get().add(new BigDecimal(String.valueOf(product.getPrice().multiply(new BigDecimal(it.getPurchaseNum()))))));
+            totalPrice.getAndSet(totalPrice.get().add(new BigDecimal(String.valueOf(book.getPrice().multiply(new BigDecimal(it.getPurchaseNum()))))));
         });
 
         order.setTotalPrice(totalPrice.get());
         if (mOrderMapper.insertOne(order) > 0) {
             // 下单成功 减少库存
-            request.getProducts().forEach(it -> {
-                mProductMapper.reduceInventoriesById(it.getProductId(), it.getPurchaseNum());
+            request.getBooks().forEach(it -> {
+                mBookMapper.reduceInventoriesById(it.getBookId(), it.getPurchaseNum());
             });
             AliPayResponse response = new AliPayResponse();
             response.setOrderSn(orderSn);

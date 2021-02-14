@@ -9,27 +9,27 @@ import java.math.BigDecimal;
  * 2021-02-12
  */
 @Data
-public class ProductResponse {
+public class BookResponse {
 
     /**
-     * 商品ID
+     * 书ID
      */
-    private Long productId;
+    private Long BookId;
 
     /**
-     * 商品名
+     * 书名
      */
-    private String productName;
+    private String BookName;
 
     /**
-     * 商品主图
+     * 书主图
      */
-    private String productImage;
+    private String BookImage;
 
     /**
      * 单价
      */
-    private BigDecimal productPrice;
+    private BigDecimal BookPrice;
 
     /**
      * 购买数量

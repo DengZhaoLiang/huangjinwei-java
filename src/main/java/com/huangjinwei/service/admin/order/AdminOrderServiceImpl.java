@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.huangjinwei.assembler.OrderAssembler;
 import com.huangjinwei.dto.admin.order.AdminOrderRequest;
 import com.huangjinwei.dto.admin.order.AdminOrderResponse;
+import com.huangjinwei.mapper.OrderBookMapper;
 import com.huangjinwei.mapper.OrderMapper;
-import com.huangjinwei.mapper.OrderProductMapper;
-import com.huangjinwei.model.OrderProduct;
+import com.huangjinwei.model.OrderBook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -32,7 +32,7 @@ public class AdminOrderServiceImpl implements AdminOrderService {
     private OrderAssembler mOrderAssembler;
 
     @Autowired
-    private OrderProductMapper mOrderProductMapper;
+    private OrderBookMapper mOrderBookMapper;
 
     @Override
     public Page<AdminOrderResponse> pageOrders(AdminOrderRequest request, Pageable pageable) {
@@ -43,11 +43,11 @@ public class AdminOrderServiceImpl implements AdminOrderService {
                         .stream()
                         .map(order -> {
                             AdminOrderResponse response = mOrderAssembler.toResponse(order);
-                            QueryWrapper<OrderProduct> wrapper = new QueryWrapper<>();
+                            QueryWrapper<OrderBook> wrapper = new QueryWrapper<>();
                             wrapper.eq("order_sn", order.getOrderSn());
-                            mOrderProductMapper.selectList(wrapper)
+                            mOrderBookMapper.selectList(wrapper)
                                     .stream()
-                                    .map(OrderProduct::getProductName)
+                                    .map(OrderBook::getBookName)
                                     .forEach(joiner::add);
                             response.setName(joiner.toString());
                             return response;

@@ -7,12 +7,12 @@ import lombok.Data;
  * 2021-02-13
  */
 @Data
-public class OrderProductResponse {
+public class OrderBookResponse {
 
     /**
-     * 商品Id
+     * 书Id
      */
-    private Long productId;
+    private Long BookId;
 
     /**
      * 购买数量

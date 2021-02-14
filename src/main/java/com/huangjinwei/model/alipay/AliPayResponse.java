@@ -77,10 +77,10 @@ public class AliPayResponse {
     //    refund_fee	总退款金额	Number(9,2)	否	退款通知中，返回总退款金额，单位为元，支持两位小数	2.58
     private String refundFee;
 
-    //    subject	订单标题	String(256)	否	商品的标题/交易标题/订单标题/订单关键字等，是请求时对应的参数，原样通知回来	当面付交易
+    //    subject	订单标题	String(256)	否	书的标题/交易标题/订单标题/订单关键字等，是请求时对应的参数，原样通知回来	当面付交易
     private String subject;
 
-    //    body	商品描述	String(400)	否	该订单的备注、描述、明细等。对应请求时的body参数，原样通知回来	当面付交易内容
+    //    body	书描述	String(400)	否	该订单的备注、描述、明细等。对应请求时的body参数，原样通知回来	当面付交易内容
     private String body;
 
     //    gmt_create	交易创建时间	Date	否	该笔交易创建的时间。格式为yyyy-MM-dd HH:mm:ss	2015-04-27 15:45:57

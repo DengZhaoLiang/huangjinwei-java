@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
                     throw new RuntimeException("邮箱已被注册");
                 });
         user.setName(user.getPhone());
-        user.setAvatar(url + "/static/defaultAvatar.png");
+        user.setAvatar(url + "/static/defaultAvatar.jpg");
         mUserMapper.insert(user);
     }
 

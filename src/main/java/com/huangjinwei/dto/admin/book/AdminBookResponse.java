@@ -1,4 +1,4 @@
-package com.huangjinwei.dto.admin.product;
+package com.huangjinwei.dto.admin.book;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import lombok.Data;
@@ -8,15 +8,15 @@ import lombok.Data;
  * 2021-02-01
  */
 @Data
-public class AdminProductResponse {
+public class AdminBookResponse {
 
     /**
-     * 商品ID
+     * 书ID
      */
     private Long id;
 
     /**
-     * 商品名
+     * 书名
      */
     private String name;
 

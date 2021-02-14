@@ -15,7 +15,7 @@ public class AdminOrderRequest {
     private String orderSn;
 
     /**
-     * 商品名
+     * 书名
      */
     private String name;
 

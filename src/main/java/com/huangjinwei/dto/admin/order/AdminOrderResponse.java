@@ -28,7 +28,7 @@ public class AdminOrderResponse {
     private BigDecimal totalPrice;
 
     /**
-     * 商品名
+     * 书名
      */
     private String name;
 
