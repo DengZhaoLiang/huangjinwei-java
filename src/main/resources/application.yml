@@ -1,0 +1,101 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/book?useSSL=false&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC
+    username: root
+    password: 259359
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    #Spring Boot 默认是不注入这些属性值的，需要自己绑定
+    #druid 数据源专有配置
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+
+    #配置监控统计拦截的filters，stat:监控统计、log4j：日志记录、wall：防御sql注入
+    #如果允许时报错  java.lang.ClassNotFoundException: org.apache.log4j.Priority
+    #则导入 log4j 依赖即可，Maven 地址： https://mvnrepository.com/artifact/log4j/log4j
+    filters: stat,wall,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
+  mvc:
+    date-format: yyyy-MM-dd
+
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+    servlet:
+      content-type: text/html; charset=utf-8
+
+  #邮箱配置
+  mail:
+    username: 386229680@qq.com
+    password: jeqenhnzinyvcbca
+    host: smtp.qq.com
+    properties:
+      mail:
+        stmp:
+          ssl:
+            enable: true
+  session:
+    timeout: 30m
+  # 设置上传文件大小
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 5000MB
+
+mybatis-plus:
+  # mapper扫描路径
+  mapper-locations: classpath:mapper/*.xml
+  # 下划线转小驼峰
+  configuration:
+    map-underscore-to-camel-case: true
+
+server:
+  port: 9527
+  base:
+    url: http://localhost:9527
+
+# 支付宝支付
+# 通信协议，通常填写https
+alipay:
+  protocol: https
+  # 网关域名
+  # 线上为：openapi.alipay.com
+  # 沙箱为：openapi.alipaydev.com
+  gatewayHost: openapi.alipaydev.com
+  # AppId
+  appId: 2021000117600607
+  # 签名类型，Alipay Easy SDK只推荐使用RSA2，估此处固定填写RSA2
+  signType: RSA2
+  # 支付宝公钥
+  alipayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlUvnA3J0vuhLMzsYKB72SbVHOFVJCKvyPajeO6wdVKxiM2EB0mqVo6MLgLFyi4OzDdNgs+1B5kHdxhdcUuSJPhNnC1pmvyJfXENLwATVmdQg8fQTTGdQ+iuyI6u4I7Wf4G1T4SottpdzjUrr/Anfrtk2RIdKiXshwA3xb44eyjAThYYLER6Kk6XeOCRoegrV2kZDe60FJHNC9+Jg57Xtsp5NJght0P1ehKfDyJ3XsS1p8DtfuiKOJBUzUuFHMEqXPrZxaY5U7DNZzM0Cq69m6U7Lsry8AaN8Mfa1sBsTWzf1FDrsOkUxRFRWHHNowGcjqvgYm9wJckxqAsPwc7er3wIDAQAB
+  # 应用私钥
+  merchantPrivateKey: MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCw1zHnoi/Hf+18RRp47fG0Ne8ZnZuC/CbAXaKGeymuaXJQZ5w6DJ2U/W1s2WHpbJhB70la86Ryd3a/y6/WN9LYLtgeTxX7320Ww7GfBfG2o9BxEtv0o8jOMNM61LkcLLWAsGs3qUbkRlrjZ4OxDNL3ylKFp2EJ/sA43M03JlhgcfJMP0Iv092XNHAwxQdxE7hKM+UP3m8d8hcnWrflvHUIgMKfeZkzUqpfBBfaBddDfs9gx7uRki1TSgO0HfBoQOxEroqz46rBzoWPh8wWcKfzvb2O3Nu7ksvk5G7cVPc4rTBO88qBnZEIz2G7KuEqqSR4IiczxxPusDwm6otyGFXVAgMBAAECggEBAIFE3ZsoiOq5zj1wOli5/1yvrFe6SWqnriAikmLh92cid8jk5GPewvadhvbxtUwv8OEJ7UKKJeTzBSBQ4fmjFwKmw57sSvKysYjZhqbrbnUHLKDrm1QqwehP8qjnxWUeHZOz4rxuhn7qGxhum+q5qCIwiMBgyWPIEHXAmla9Ng9RIA8efhIrLGobGfxZOYf13GidKC8qkaIYmB9bAJ2RnqS2M4kH6KwgEc3R+Ra4CN0Cva5RWORa5lbQ7a4JTar3oh4vKBXID51wQuXdnI7zXgBg95gp6Tr3TQgym9THRD+IhopzTjUPrh4mUdXKJk6a875rDJy0KNBgVc/Q8qDOviECgYEA/wuNlwErBJjyGgxw1yTdfU6grXh7ZbVqI8PuL496MfN8vvI04vRWclN3/iIzFoivz010jBFUqbe3VHI8qCR3ZZJqWJvNeN5SMtyNbsrgx3RW2mNN+nSdABUgWQfwqGwuAHleOoG85tuDfR56JRHRpp3VFWpymsDQP8rbGZV/UG0CgYEAsYCv42I1c/QKC6zb4wsESqtTbj6u1+aeld5ogkjrc+UYJebjEtoZCa2z3779DOSepZylmEKaGxTUm2Uh5PYshHrNhCxnEcf0o8MeWLfMfZp5It8dLiWTRkwCMzvgjGLIrD8EF9hCljw2tJO8A8dPzuYBPK/XgM1BRD9W3Ft7SgkCgYEAi2LcAgAQa5XPEq9j6CDsr7QOGmAzSFXKaTuGbBXE2ZHRxmWGw9Z3fEnj1U8JjrIrK2eQX5CFLbALEKrSPa6YVjmbx0t3Eyylzcg9v6Q/DqKlaPtGva+HsmjZYe719oYQ6g9qkR0giSbFCNdkN+gyJRYzQ14Gvk7MQWDzN1s91k0CgYEAoxt7hNi0Aa8YpA3dqM5wzSSN79pN1DspMtJC+qWDJuY3wGxf8OzU4R3rEglwgq56UfiV+koJTiVgEMNn1/uWgM5Pl8stkxtI5Erh0ehjUm/mLHMVX1hL8ubZhrbY6mfDuvPVEQw6c880/c5bkKVP4vFb5aY3wzXZaZtCeA7gRfECgYBfDURuR+cQJkbSqkXHgDC8upktr0OltXmmg5PxqsnaHdMFdz5Mef92+3FeGdnokLy1kX2KJTbPfSCNbtLUzp52a5cNwxvtYzRRIgrPKA36vAJ+Syvtk3D2ugR0+9sR901DxyyZACw9eYCXZjsEt9azGKGt7uckgoebSlk2ezMHsw==
+  # 应用公钥证书文件路径
+  merchantCertPath:
+  # 支付宝公钥证书文件路径
+  alipayCertPath:
+  # 异步通知回调地址（可选）
+  notifyUrl: ${server.base.url}/api/alipay/notify
+  # AES密钥（可选）
+  encryptKey:
+  # 忽略证书校验（可选）
+  ignoreSSL: true
+
+# 支付过期时间
+pay:
+  timeout: 5
+  # 支付跳过开关
+  switch.skip: false
