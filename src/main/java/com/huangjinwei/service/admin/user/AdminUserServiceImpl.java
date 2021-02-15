@@ -6,7 +6,7 @@ import com.huangjinwei.dto.admin.user.AdminUserRequest;
 import com.huangjinwei.dto.admin.user.AdminUserResponse;
 import com.huangjinwei.mapper.UserMapper;
 import com.huangjinwei.model.User;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -34,8 +34,8 @@ public class AdminUserServiceImpl implements AdminUserService {
     public Page<AdminUserResponse> pageUsers(AdminUserRequest request, Pageable pageable) {
         PageRequest page = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.like(Strings.isNotBlank(request.getName()), "name", request.getName());
-        wrapper.eq(Strings.isNotBlank(request.getPhone()), "phone", request.getPhone());
+        wrapper.like(!StringUtils.isEmpty(request.getName()), "name", request.getName());
+        wrapper.eq(!StringUtils.isEmpty(request.getPhone()), "phone", request.getPhone());
         List<AdminUserResponse> users = mUserMapper.selectList(wrapper)
                 .stream()
                 .map(user -> mUserAssembler.toResponse(user))

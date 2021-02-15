@@ -3,7 +3,7 @@ package com.huangjinwei.service.api.category;
 import java.util.List;
 
 /**
- * @author zhanzihao
+ * @author huangjinwei
  * 2021-02-15
  */
 public interface CategoryService {

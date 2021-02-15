@@ -17,7 +17,7 @@ import com.huangjinwei.model.OrderBook;
 import com.huangjinwei.service.alipay.AliPayService;
 import com.huangjinwei.utils.OrderSnGenerateUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -93,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     public AliPayResponse createOrder(OrderRequest request) {
 
-        if (Strings.isNotBlank(request.getOrderSn()) && !Objects.isNull(request.getTotalPrice())) {
+        if (!StringUtils.isEmpty(request.getOrderSn()) && !Objects.isNull(request.getTotalPrice())) {
             AliPayResponse response = new AliPayResponse();
             response.setOrderSn(request.getOrderSn());
             response.setTotalPrice(request.getTotalPrice());

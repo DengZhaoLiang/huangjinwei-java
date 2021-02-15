@@ -7,7 +7,7 @@ import com.huangjinwei.dto.admin.Book.AdminBookRequest;
 import com.huangjinwei.dto.admin.book.AdminBookResponse;
 import com.huangjinwei.mapper.BookMapper;
 import com.huangjinwei.model.Book;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -37,7 +37,7 @@ public class AdminBookServiceImpl implements AdminBookService {
     public Page<AdminBookResponse> pageBooks(AdminBookRequest request, Pageable pageable) {
         PageRequest page = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
         QueryWrapper<Book> wrapper = new QueryWrapper<>();
-        wrapper.like(Strings.isNotBlank(request.getName()), "name", request.getName());
+        wrapper.like(!StringUtils.isEmpty(request.getName()), "name", request.getName());
         List<AdminBookResponse> Books = mBookMapper.selectList(wrapper).stream()
                 .map(Book -> mBookAssembler.toResponse(Book))
                 .collect(Collectors.toList());
@@ -68,8 +68,8 @@ public class AdminBookServiceImpl implements AdminBookService {
     @Override
     public void updateBook(Book book) {
         UpdateWrapper<Book> wrapper = new UpdateWrapper<>();
-        wrapper.set(Strings.isNotBlank(book.getName()), "name", book.getName());
-        wrapper.set(Strings.isNotBlank(book.getImage()), "image", book.getImage());
+        wrapper.set(!StringUtils.isEmpty(book.getName()), "name", book.getName());
+        wrapper.set(!StringUtils.isEmpty(book.getImage()), "image", book.getImage());
         wrapper.set(Objects.nonNull(book.getPrice()), "price", book.getPrice());
         wrapper.set(Objects.nonNull(book.getInventory()), "inventory", book.getInventory());
         wrapper.eq("id", book.getId());

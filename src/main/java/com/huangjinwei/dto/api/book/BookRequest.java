@@ -3,7 +3,7 @@ package com.huangjinwei.dto.api.book;
 import lombok.Data;
 
 /**
- * @author zhanzihao
+ * @author huangjinwei
  * 2021-02-15
  */
 @Data

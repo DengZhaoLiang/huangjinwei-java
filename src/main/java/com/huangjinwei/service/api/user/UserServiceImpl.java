@@ -5,10 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.huangjinwei.dto.api.user.LoginRequest;
 import com.huangjinwei.mapper.UserMapper;
 import com.huangjinwei.model.User;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
         wrapper.eq("phone", user.getPhone());
         Optional.ofNullable(mUserMapper.selectOne(wrapper))
                 .ifPresent(it -> {
-                    throw new RuntimeException("邮箱已被注册");
+                    throw new RuntimeException("手机号已被注册");
                 });
         user.setName(user.getPhone());
         user.setAvatar(url + "/static/defaultAvatar.jpg");
@@ -53,11 +54,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(User user) {
-        UpdateWrapper<User> wrapper = new UpdateWrapper<>();
-        wrapper.set(Strings.isNotBlank(user.getAvatar()), "avatar", user.getAvatar());
-        wrapper.set(Strings.isNotBlank(user.getName()), "name", user.getName());
-        wrapper.eq("id", user.getId());
-        mUserMapper.update(user, wrapper);
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("phone", user.getPhone());
+        Optional.ofNullable(mUserMapper.selectOne(wrapper))
+                .ifPresent(it -> {
+                    if (!ObjectUtils.nullSafeEquals(it.getId(), user.getId())) {
+                        throw new RuntimeException("手机号已被注册");
+                    }
+                });
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set(!StringUtils.isEmpty(user.getAvatar()), "avatar", user.getAvatar());
+        updateWrapper.set(!StringUtils.isEmpty(user.getName()), "name", user.getName());
+        updateWrapper.set(!StringUtils.isEmpty(user.getPhone()), "phone", user.getPhone());
+        updateWrapper.set(!StringUtils.isEmpty(user.getPassword()), "password", user.getPassword());
+        updateWrapper.eq("id", user.getId());
+        mUserMapper.update(user, updateWrapper);
         return mUserMapper.selectById(user.getId());
     }
 }

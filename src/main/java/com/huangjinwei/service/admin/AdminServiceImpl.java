@@ -8,7 +8,7 @@ import com.huangjinwei.dto.admin.AdminRequest;
 import com.huangjinwei.dto.admin.AdminResponse;
 import com.huangjinwei.mapper.AdminMapper;
 import com.huangjinwei.model.Admin;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -48,10 +48,10 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void modify(AdminModifyRequest request) {
         UpdateWrapper wrapper = new UpdateWrapper<Admin>();
-        wrapper.set(Strings.isNotBlank(request.getName()), "name", request.getName());
-        wrapper.set(Strings.isNotBlank(request.getAccount()), "account", request.getAccount());
-        wrapper.set(Strings.isNotBlank(request.getAvatar()), "avatar", request.getAvatar());
-        wrapper.set(Strings.isNotBlank(request.getPassword()), "password", request.getPassword());
+        wrapper.set(!StringUtils.isEmpty(request.getName()), "name", request.getName());
+        wrapper.set(!StringUtils.isEmpty(request.getAccount()), "account", request.getAccount());
+        wrapper.set(!StringUtils.isEmpty(request.getAvatar()), "avatar", request.getAvatar());
+        wrapper.set(!StringUtils.isEmpty(request.getPassword()), "password", request.getPassword());
         wrapper.eq("id", 1);
         mAdminMapper.update(mAdminMapper.selectById(1), wrapper);
     }

@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     
-    <groupId>com.zhanzihao</groupId>
+    <groupId>com.huangjinwei</groupId>
     <artifactId>maven</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>maven</name>

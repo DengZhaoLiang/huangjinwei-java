@@ -6,7 +6,7 @@ import com.huangjinwei.mapper.BookMapper;
 import com.huangjinwei.mapper.CategoryMapper;
 import com.huangjinwei.model.Book;
 import com.huangjinwei.model.Category;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -35,8 +35,8 @@ public class BookServiceImpl implements BookService {
         PageRequest page = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
         QueryWrapper<Book> wrapper = new QueryWrapper<>();
         wrapper.eq("status", 1);
-        wrapper.like(Strings.isNotBlank(request.getBookName()), "name", request.getBookName());
-        if (Strings.isNotBlank(request.getCategoryName())) {
+        wrapper.like(!StringUtils.isEmpty(request.getBookName()), "name", request.getBookName());
+        if (!StringUtils.isEmpty(request.getCategoryName())) {
             QueryWrapper<Category> categoryQuery = new QueryWrapper<>();
             categoryQuery.eq("name", request.getCategoryName());
             Long categroyId = mCategoryMapper.selectOne(categoryQuery).getId();
