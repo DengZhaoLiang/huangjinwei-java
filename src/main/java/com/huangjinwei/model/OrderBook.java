@@ -29,7 +29,7 @@ public class OrderBook {
     /**
      * 书ID
      */
-    private Long BookId;
+    private Long bookId;
 
     /**
      * 书名

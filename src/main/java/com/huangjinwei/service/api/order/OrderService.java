@@ -21,4 +21,9 @@ public interface OrderService {
      * 创建订单
      */
     AliPayResponse createOrder(OrderRequest request);
+
+    /**
+     * 查询订单是否已付款
+     */
+    Boolean isPayed(String orderSn);
 }

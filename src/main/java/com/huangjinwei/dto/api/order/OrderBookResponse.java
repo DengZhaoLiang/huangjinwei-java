@@ -12,7 +12,7 @@ public class OrderBookResponse {
     /**
      * 书Id
      */
-    private Long BookId;
+    private Long bookId;
 
     /**
      * 购买数量

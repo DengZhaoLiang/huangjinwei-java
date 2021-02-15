@@ -77,7 +77,7 @@ public class AliPayServiceImpl implements AliPayService {
         }
         AlipayTradePagePayResponse response;
         try {
-            response = Factory.Payment.Page().pay(goodsName, orderNo, fee.toString(), "http://localhost:8000/#/order?step=4");
+            response = Factory.Payment.Page().pay(goodsName, orderNo, fee.toString(), "http://localhost:8080/#/shopping/settle?step=4");
             log.info("支付宝下单成功:{}", mObjectMapper.writeValueAsString(response));
         } catch (Exception e) {
             log.error("支付宝下单失败:{}", orderNo);

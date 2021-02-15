@@ -14,7 +14,7 @@ public class BookResponse {
     /**
      * 书ID
      */
-    private Long BookId;
+    private Long bookId;
 
     /**
      * 书名

@@ -61,5 +61,5 @@ public class OrderResponse {
     /**
      * 产品列表
      */
-    private List<BookResponse> Books;
+    private List<BookResponse> books;
 }

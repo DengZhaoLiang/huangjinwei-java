@@ -155,4 +155,9 @@ public class OrderServiceImpl implements OrderService {
         }
         return null;
     }
+
+    @Override
+    public Boolean isPayed(String orderSn) {
+        return mOrderMapper.isPayed(orderSn);
+    }
 }

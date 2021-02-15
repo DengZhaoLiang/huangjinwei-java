@@ -42,4 +42,12 @@
             </if>
         </where>
     </select>
+    <select id="isPayed" resultType="java.lang.Boolean">
+        select (`order`.`status` = 2) from `order`
+        <where>
+            <if test="orderSn != null and orderSn != '' ">
+                `order_sn` = '${orderSn}'
+            </if>
+        </where>
+    </select>
 </mapper>

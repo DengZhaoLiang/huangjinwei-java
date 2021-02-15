@@ -35,5 +35,5 @@ public class OrderRequest {
     /**
      * 购买的产品列表
      */
-    private List<OrderBookResponse> Books;
+    private List<OrderBookResponse> books;
 }

@@ -27,4 +27,6 @@ public interface OrderMapper extends BaseMapper<Order> {
     Order selectByOrderSn(@Param("orderSn") String orderSn);
 
     void updateStatus(@Param("orderSn") String orderSn, @Param("status") int status);
+
+    Boolean isPayed(@Param("orderSn") String orderSn);
 }

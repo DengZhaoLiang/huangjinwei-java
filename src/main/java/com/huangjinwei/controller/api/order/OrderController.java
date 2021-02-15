@@ -36,4 +36,9 @@ public class OrderController {
     public AliPayResponse createOrder(@RequestBody @Validated OrderRequest request) {
         return mOrderService.createOrder(request);
     }
+
+    @PostMapping("payed/{orderSn}")
+    public Boolean isPayed(@PathVariable String orderSn) {
+        return mOrderService.isPayed(orderSn);
+    }
 }
