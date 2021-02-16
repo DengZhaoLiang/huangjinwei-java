@@ -1,4 +1,4 @@
-package com.huangjinwei.dto.admin.Book;
+package com.huangjinwei.dto.admin.book;
 
 import lombok.Data;
 
@@ -13,4 +13,9 @@ public class AdminBookRequest {
      * 书名
      */
     private String name;
+
+    /**
+     * 类别Id
+     */
+    private Long categoryId;
 }

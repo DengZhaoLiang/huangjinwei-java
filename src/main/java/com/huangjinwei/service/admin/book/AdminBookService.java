@@ -1,6 +1,6 @@
 package com.huangjinwei.service.admin.book;
 
-import com.huangjinwei.dto.admin.Book.AdminBookRequest;
+import com.huangjinwei.dto.admin.book.AdminBookRequest;
 import com.huangjinwei.dto.admin.book.AdminBookResponse;
 import com.huangjinwei.model.Book;
 import org.springframework.data.domain.Page;
@@ -42,7 +42,7 @@ public interface AdminBookService {
     /**
      * 获取书详情
      */
-    Book detailBook(Long id);
+    AdminBookResponse detailBook(Long id);
 
     /**
      * 上下架书

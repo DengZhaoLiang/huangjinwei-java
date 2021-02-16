@@ -26,6 +26,11 @@ public class Book {
     private String name;
 
     /**
+     * 作者
+     */
+    private String author;
+
+    /**
      * 主图
      */
     private String image;

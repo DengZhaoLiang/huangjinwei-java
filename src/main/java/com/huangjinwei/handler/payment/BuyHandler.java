@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+
 /**
  * @author huangjinwei
  * 2021-02-13
@@ -23,6 +25,8 @@ public class BuyHandler implements PaymentHandler {
     public void onPaySuccess(Payment payment) {
         Order order = mOrderMapper.selectByOrderSn(payment.getOrderSn());
 
+        // 修改支付时间
+        mOrderMapper.updatePayAt(payment.getOrderSn(), Instant.now().getEpochSecond());
         // 修改订单付款状态
         mOrderMapper.updateStatus(payment.getOrderSn(), PaymentStatus.PAID.getCode());
     }

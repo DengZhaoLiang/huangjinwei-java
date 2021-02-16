@@ -11,15 +11,17 @@
         set `status` = ${status}
         where `order_sn` = '${orderSn}'
     </update>
+    <update id="updatePayAt">
+        update `order`
+        set `pay_at` = ${payAt}
+        where `order_sn` = '${orderSn}'
+    </update>
     
     <select id="listByConditions" resultType="com.huangjinwei.model.Order">
         select * from `order`
         <where>
             <if test="orderSn != null and orderSn != '' ">
-                `order_sn` = ${orderSn}
-            </if>
-            <if test="name != null and name != '' ">
-                and `name` = ${name}
+                `order_sn` = '${orderSn}'
             </if>
             <if test="status != null">
                 and `status` = ${status}

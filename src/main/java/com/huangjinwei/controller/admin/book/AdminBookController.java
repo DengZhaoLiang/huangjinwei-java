@@ -1,7 +1,7 @@
 package com.huangjinwei.controller.admin.book;
 
 import com.huangjinwei.dto.IDSRequest;
-import com.huangjinwei.dto.admin.Book.AdminBookRequest;
+import com.huangjinwei.dto.admin.book.AdminBookRequest;
 import com.huangjinwei.dto.admin.book.AdminBookResponse;
 import com.huangjinwei.model.Book;
 import com.huangjinwei.service.admin.book.AdminBookService;
@@ -36,7 +36,7 @@ public class AdminBookController {
     }
 
     @GetMapping("/{id}")
-    public Book detailBook(@PathVariable Long id) {
+    public AdminBookResponse detailBook(@PathVariable Long id) {
         return mAdminBookService.detailBook(id);
     }
 

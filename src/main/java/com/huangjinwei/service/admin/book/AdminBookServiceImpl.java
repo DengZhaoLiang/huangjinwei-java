@@ -3,10 +3,12 @@ package com.huangjinwei.service.admin.book;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.huangjinwei.assembler.BookAssembler;
-import com.huangjinwei.dto.admin.Book.AdminBookRequest;
+import com.huangjinwei.dto.admin.book.AdminBookRequest;
 import com.huangjinwei.dto.admin.book.AdminBookResponse;
 import com.huangjinwei.mapper.BookMapper;
+import com.huangjinwei.mapper.CategoryMapper;
 import com.huangjinwei.model.Book;
+import com.huangjinwei.model.Category;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,10 +16,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -33,18 +37,29 @@ public class AdminBookServiceImpl implements AdminBookService {
     @Autowired
     private BookAssembler mBookAssembler;
 
+    @Autowired
+    private CategoryMapper mCategoryMapper;
+
     @Override
     public Page<AdminBookResponse> pageBooks(AdminBookRequest request, Pageable pageable) {
         PageRequest page = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
         QueryWrapper<Book> wrapper = new QueryWrapper<>();
         wrapper.like(!StringUtils.isEmpty(request.getName()), "name", request.getName());
-        List<AdminBookResponse> Books = mBookMapper.selectList(wrapper).stream()
-                .map(Book -> mBookAssembler.toResponse(Book))
+        wrapper.like(!ObjectUtils.isEmpty(request.getCategoryId()), "category_id", request.getCategoryId());
+        List<AdminBookResponse> books = mBookMapper.selectList(wrapper).stream()
+                .map(book -> {
+                    AdminBookResponse response = mBookAssembler.toResponse(book);
+                    Optional.ofNullable(mCategoryMapper.selectById(response.getCategoryId()))
+                            .ifPresent(category -> {
+                                response.setCategoryName(category.getName());
+                            });
+                    return response;
+                })
                 .collect(Collectors.toList());
-        return new PageImpl<>(Books.stream()
+        return new PageImpl<>(books.stream()
                 .skip((page.getPageNumber()) * page.getPageSize())
                 .limit(page.getPageSize())
-                .collect(Collectors.toList()), page, Books.size());
+                .collect(Collectors.toList()), page, books.size());
     }
 
     @Override
@@ -79,8 +94,12 @@ public class AdminBookServiceImpl implements AdminBookService {
     }
 
     @Override
-    public Book detailBook(Long id) {
-        return mBookMapper.selectById(id);
+    public AdminBookResponse detailBook(Long id) {
+        Book book = mBookMapper.selectById(id);
+        AdminBookResponse response = mBookAssembler.toResponse(book);
+        Optional.ofNullable(mCategoryMapper.selectById(response.getCategoryId()))
+                .ifPresent(category -> response.setCategoryName(category.getName()));
+        return response;
     }
 
     @Override

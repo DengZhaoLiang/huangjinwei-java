@@ -7,6 +7,7 @@ import com.huangjinwei.dto.admin.order.AdminOrderResponse;
 import com.huangjinwei.mapper.OrderBookMapper;
 import com.huangjinwei.mapper.OrderMapper;
 import com.huangjinwei.model.OrderBook;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -39,7 +40,7 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         PageRequest page = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize());
         StringJoiner joiner = new StringJoiner("，");
         List<AdminOrderResponse> orders =
-                mOrderMapper.listByConditions(request.getOrderSn(), request.getName(), request.getStatus())
+                mOrderMapper.listByConditions(request.getOrderSn(), request.getStatus())
                         .stream()
                         .map(order -> {
                             AdminOrderResponse response = mOrderAssembler.toResponse(order);
@@ -51,7 +52,8 @@ public class AdminOrderServiceImpl implements AdminOrderService {
                                     .forEach(joiner::add);
                             response.setName(joiner.toString());
                             return response;
-                        })
+                        }).filter(it -> Strings.isBlank(request.getName()) ||
+                        it.getName().contains(request.getName()))
                         .collect(Collectors.toList());
         return new PageImpl<>(orders.stream()
                 .skip((page.getPageNumber()) * page.getPageSize())

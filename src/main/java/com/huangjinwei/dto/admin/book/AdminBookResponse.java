@@ -1,7 +1,10 @@
 package com.huangjinwei.dto.admin.book;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 /**
  * @author huangjinwei
@@ -21,6 +24,11 @@ public class AdminBookResponse {
     private String name;
 
     /**
+     * 作者
+     */
+    private String author;
+
+    /**
      * 主图
      */
     private String image;
@@ -36,6 +44,16 @@ public class AdminBookResponse {
     private Integer inventory;
 
     /**
+     * 推荐程度
+     */
+    private BigDecimal commend;
+
+    /**
+     * 类别名
+     */
+    private String categoryName;
+
+    /**
      * 状态
      */
     private Integer status;
@@ -44,4 +62,6 @@ public class AdminBookResponse {
     public String getStatusStr() {
         return status == 1 ? "上架" : "下架";
     }
+
+    private Long categoryId;
 }

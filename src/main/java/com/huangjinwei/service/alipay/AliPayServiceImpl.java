@@ -7,14 +7,12 @@ import com.alipay.easysdk.payment.page.models.AlipayTradePagePayResponse;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.CaseFormat;
 import com.huangjinwei.constant.PaymentMode;
 import com.huangjinwei.constant.PaymentStatus;
 import com.huangjinwei.constant.PaymentType;
 import com.huangjinwei.constant.alipay.AliPayTradeStatus;
 import com.huangjinwei.mapper.PaymentMapper;
 import com.huangjinwei.model.Payment;
-import com.huangjinwei.model.alipay.AliPayResponse;
 import com.huangjinwei.utils.EnumUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -23,16 +21,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Liang
@@ -77,14 +70,12 @@ public class AliPayServiceImpl implements AliPayService {
         }
         AlipayTradePagePayResponse response;
         try {
-            response = Factory.Payment.Page().pay(goodsName, orderNo, fee.toString(), "http://localhost:8080/#/shopping/settle?step=4");
+            response = Factory.Payment.Page().pay(goodsName, orderNo, fee.toString(), "http://localhost:8000/#/shopping/settle?step=4");
             log.info("支付宝下单成功:{}", mObjectMapper.writeValueAsString(response));
         } catch (Exception e) {
             log.error("支付宝下单失败:{}", orderNo);
             throw new RuntimeException(e);
         }
-        Instant timeoutAt = Instant.now().plus(payTimeout, ChronoUnit.MINUTES);
-        // TODO 延时队列
 
         return response;
     }
@@ -198,58 +189,5 @@ public class AliPayServiceImpl implements AliPayService {
                 Instant.now() : LocalDateTime.parse(str,
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 .toInstant(ZoneOffset.of("+8"));
-    }
-
-
-    private Map<String, String> callbackRequestToMap(HttpServletRequest request) {
-        // 获取支付宝POST过来反馈信息
-        Map<String, String> params = new HashMap<>();
-        Enumeration<?> temp = request.getParameterNames();
-
-        while (temp.hasMoreElements()) {
-            String key = (String) temp.nextElement();
-            String value = request.getParameter(key);
-            // 乱码解决，这段代码在出现乱码时使用。
-            // valueStr = new String(valueStr.getBytes("ISO-8859-1"), "utf-8");
-            params.put(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, key), value);
-        }
-        return params;
-    }
-
-    private AliPayResponse mapToAliPayResponse(Map<String, String> params) {
-        AliPayResponse response = new AliPayResponse();
-        response.setNotifyTime(params.get("notify_time"));
-        response.setNotifyType(params.get("notify_type"));
-        response.setNotifyId(params.get("notify_id"));
-        response.setAppId(params.get("app_id"));
-        response.setCharset(params.get("charset"));
-        response.setVersion(params.get("version"));
-        response.setSignType(params.get("sign_type"));
-        response.setSign(params.get("sign"));
-        response.setTradeNo(params.get("trade_no"));
-        response.setOutTradeNo(params.get("out_trade_no"));
-        response.setOutBizNo(params.getOrDefault("out_biz_no", ""));
-        response.setBuyerId(params.getOrDefault("buyerId", ""));
-        response.setBuyerLogonId(params.getOrDefault("buyer_logon_id", ""));
-        response.setSellerId(params.getOrDefault("seller_id", ""));
-        response.setSellerEmail(params.getOrDefault("seller_email", ""));
-        response.setTradeStatus(params.containsKey("trade_status") ?
-                AliPayTradeStatus.fromCode(params.get("trade_status")) : null);
-        response.setTotalAmount(params.getOrDefault("total_amount", ""));
-        response.setReceiptAmount(params.getOrDefault("receipt_amount", ""));
-        response.setInvoiceAmount(params.getOrDefault("invoice_amount", ""));
-        response.setBuyerPayAmount(params.getOrDefault("buyer_pay_amount", ""));
-        response.setPointAmount(params.getOrDefault("point_amount", ""));
-        response.setRefundFee(params.getOrDefault("refund_fee", ""));
-        response.setSubject(params.getOrDefault("subject", ""));
-        response.setBody(params.getOrDefault("body", ""));
-        response.setGmtCreate(params.getOrDefault("gmt_create", ""));
-        response.setGmtPayment(params.getOrDefault("gmt_payment", ""));
-        response.setGmtRefund(params.getOrDefault("gmt_refund", ""));
-        response.setGmtClose(params.getOrDefault("gmt_close", ""));
-        response.setFundBillList(params.getOrDefault("fund_bill_list", ""));
-        response.setPassbackParams(params.getOrDefault("passback_params", ""));
-        response.setVoucherDetailList(params.getOrDefault("voucher_detail_list", ""));
-        return response;
     }
 }

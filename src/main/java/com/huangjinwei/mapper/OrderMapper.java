@@ -17,7 +17,6 @@ import java.util.List;
 public interface OrderMapper extends BaseMapper<Order> {
 
     List<Order> listByConditions(@Param("orderSn") String orderSn,
-                                 @Param("name") String name,
                                  @Param("status") Integer status);
 
     List<Order> listByUserId(@Param("userId") Long userId);
@@ -29,4 +28,6 @@ public interface OrderMapper extends BaseMapper<Order> {
     void updateStatus(@Param("orderSn") String orderSn, @Param("status") int status);
 
     Boolean isPayed(@Param("orderSn") String orderSn);
+
+    void updatePayAt(@Param("orderSn") String orderSn, @Param("payAt") long payAt);
 }
